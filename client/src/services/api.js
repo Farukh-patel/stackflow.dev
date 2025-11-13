@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-export const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
+// Prefer environment variable; otherwise auto-pick a sensible default per environment
+const defaultServerUrl = import.meta.env.PROD
+  ? 'https://stackflow-dev-1.onrender.com'
+  : 'http://localhost:5000';
+export const SERVER_URL = import.meta.env.VITE_SERVER_URL || defaultServerUrl;
 
 export async function fetchProducts() {
   const { data } = await axios.get(`${SERVER_URL}/api/products`);
