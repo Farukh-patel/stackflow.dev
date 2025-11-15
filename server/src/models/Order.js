@@ -9,10 +9,13 @@ const orderSchema = new mongoose.Schema(
         priceInCents: { type: Number, required: true }
       }
     ],
-    stripeSessionId: { type: String, index: true },
+    razorpayOrderId: { type: String, index: true },
+    razorpayPaymentId: { type: String },
+    razorpayPaymentLinkId: { type: String },
     downloadToken: { type: String, index: true },
     tokenExpiresAt: { type: Date },
-    paid: { type: Boolean, default: false }
+    paid: { type: Boolean, default: false },
+    paymentStatus: { type: String, enum: ['PENDING', 'SUCCESS', 'FAILED', 'CANCELLED'], default: 'PENDING' }
   },
   { timestamps: true }
 );

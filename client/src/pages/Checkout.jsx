@@ -39,7 +39,7 @@ export function Checkout() {
       <div className="grid md:grid-cols-3 gap-6 md:gap-8">
         <div className="md:col-span-2 space-y-4">
           {cartDetails.length === 0 ? (
-            <p className="text-gray-400">Your cart is empty. <a href="/products" className="text-primary underline">See products</a> to add notes.</p>
+            <p className="text-gray-400">Your cart is empty. Add items from the Products page.</p>
           ) : (
             cartDetails.map(({ product, quantity }) => (
               <div key={product.slug} className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border border-gray-800 rounded-md">
@@ -60,7 +60,7 @@ export function Checkout() {
             <span>Total</span>
             <span className="text-primary font-semibold">₹ {(total / 100).toFixed(0)}</span>
           </div>
-          <button onClick={pay} className="mt-4 w-full px-4 py-2 rounded-md bg-primary text-gray-900 font-medium text-sm sm:text-base">Pay with Card / UPI</button>
+          <button onClick={pay} className="mt-4 w-full px-4 py-2 rounded-md bg-primary text-gray-900 font-medium text-sm sm:text-base">Pay with Card</button>
           <button onClick={() => clear()} className="mt-2 w-full px-4 py-2 rounded-md border border-gray-700 text-sm sm:text-base">Clear Cart</button>
         </div>
       </div>

@@ -54,3 +54,4 @@ coverage/
 # Production
 *.pem
 *.key
+.md

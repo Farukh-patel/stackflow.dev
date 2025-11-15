@@ -23,7 +23,8 @@ export function Success() {
         setExpiresAt(data.expiresAt || '');
         clear();
       } catch (e) {
-        setError('Payment verification failed');
+        console.error('Verification error:', e);
+        setError(e.response?.data?.error || 'Payment verification failed');
       }
     })();
   }, []);

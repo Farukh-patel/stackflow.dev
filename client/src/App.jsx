@@ -5,6 +5,9 @@ import { Products } from './pages/Products.jsx';
 import { About } from './pages/About.jsx';
 import { Checkout } from './pages/Checkout.jsx';
 import { Success } from './pages/Success.jsx';
+import { Terms } from './pages/Terms.jsx';
+import { RefundPolicy } from './pages/RefundPolicy.jsx';
+import { PrivacyPolicy } from './pages/PrivacyPolicy.jsx';
 import { Logo } from './components/Logo.jsx';
 import { useCart } from './context/CartContext.jsx';
 
@@ -19,6 +22,9 @@ export default function App() {
           <Route path="/about" element={<About />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/success" element={<Success />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/refund-policy" element={<RefundPolicy />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         </Routes>
       </main>
       {/* Floating Checkout for mobile users */}
@@ -144,9 +150,16 @@ function FloatingCheckout() {
 function Footer() {
   return (
     <footer className="border-t border-gray-800/60 py-8 mt-16">
-      <div className="mx-auto max-w-6xl px-4 text-sm text-gray-400 flex flex-col sm:flex-row items-center justify-between gap-2">
-        <p>© {new Date().getFullYear()} stackflow.dev</p>
-        <p>Built with React, Tailwind, Stripe</p>
+      <div className="mx-auto max-w-6xl px-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+          <p className="text-sm text-gray-400">© {new Date().getFullYear()} stackflow.dev</p>
+          <p className="text-sm text-gray-400">Built with React, Tailwind, Razorpay</p>
+        </div>
+        <nav className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-gray-400">
+          <Link to="/terms" className="hover:text-primary transition-colors">Terms & Conditions</Link>
+          <Link to="/refund-policy" className="hover:text-primary transition-colors">Refund Policy</Link>
+          <Link to="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>
+        </nav>
       </div>
     </footer>
   );
