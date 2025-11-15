@@ -8,6 +8,7 @@ import { Success } from './pages/Success.jsx';
 import { Terms } from './pages/Terms.jsx';
 import { RefundPolicy } from './pages/RefundPolicy.jsx';
 import { PrivacyPolicy } from './pages/PrivacyPolicy.jsx';
+import { Contact } from './pages/Contact.jsx';
 import { Logo } from './components/Logo.jsx';
 import { useCart } from './context/CartContext.jsx';
 
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="/terms" element={<Terms />} />
           <Route path="/refund-policy" element={<RefundPolicy />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </main>
       {/* Floating Checkout for mobile users */}
@@ -54,6 +56,7 @@ function Navbar() {
           <NavLink className={({ isActive }) => `text-base hover:text-primary transition-colors ${isActive ? 'text-primary' : ''}`} to="/">Home</NavLink>
           <NavLink className={({ isActive }) => `text-base hover:text-primary transition-colors ${isActive ? 'text-primary' : ''}`} to="/products">Products</NavLink>
           <NavLink className={({ isActive }) => `text-base hover:text-primary transition-colors ${isActive ? 'text-primary' : ''}`} to="/about">About</NavLink>
+          <NavLink className={({ isActive }) => `text-base hover:text-primary transition-colors ${isActive ? 'text-primary' : ''}`} to="/contact">Contact</NavLink>
           <NavLink className={({ isActive }) => `text-base hover:text-primary transition-colors ${isActive ? 'text-primary' : ''}`} to="/checkout">
             <span className="flex items-center gap-1">
               Cart 
@@ -117,6 +120,13 @@ function Navbar() {
             </NavLink>
             <NavLink 
               className={({ isActive }) => `block px-3 py-2 rounded-md hover:bg-gray-800/50 transition-colors ${isActive ? 'text-primary bg-gray-800/50' : ''}`} 
+              to="/contact"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Contact
+            </NavLink>
+            <NavLink 
+              className={({ isActive }) => `block px-3 py-2 rounded-md hover:bg-gray-800/50 transition-colors ${isActive ? 'text-primary bg-gray-800/50' : ''}`} 
               to="/checkout"
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -156,6 +166,7 @@ function Footer() {
           <p className="text-sm text-gray-400">Built with React, Tailwind, Razorpay</p>
         </div>
         <nav className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-gray-400">
+          <Link to="/contact" className="hover:text-primary transition-colors">Contact Us</Link>
           <Link to="/terms" className="hover:text-primary transition-colors">Terms & Conditions</Link>
           <Link to="/refund-policy" className="hover:text-primary transition-colors">Refund Policy</Link>
           <Link to="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>
