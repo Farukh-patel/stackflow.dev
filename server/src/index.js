@@ -40,10 +40,15 @@ app.get('/api/health', (_req, res) => {
 const PORT = process.env.PORT || 5000;
 
 async function start() {
-  await connectDb();
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
+  try {
+    await connectDb();
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
 }
 
 start();

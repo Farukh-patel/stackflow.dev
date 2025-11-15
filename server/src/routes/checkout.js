@@ -114,6 +114,9 @@ router.post('/create-session', async (req, res) => {
     if (error.message.includes('RAZORPAY_KEY_ID') || error.message.includes('RAZORPAY_KEY_SECRET')) {
       errorMessage = 'Razorpay is not configured. Please set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in your server environment variables.';
       statusCode = 500;
+    } else if (error.message.includes('authentication failed') || error.message.includes('Authentication failed')) {
+      errorMessage = 'Razorpay authentication failed. Please verify your RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET are correct and match your Razorpay account (test/live mode).';
+      statusCode = 401;
     } else if (error.message.includes('CLIENT_URL')) {
       errorMessage = 'CLIENT_URL is not configured. Please set CLIENT_URL in your server environment variables.';
       statusCode = 500;

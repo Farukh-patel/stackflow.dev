@@ -6,6 +6,8 @@ import { useCart } from '../context/CartContext.jsx';
 export function Checkout() {
   const [products, setProducts] = useState([]);
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const { items, removeItem, clear } = useCart();
 
   useEffect(() => {
@@ -25,11 +27,36 @@ export function Checkout() {
   const total = cartDetails.reduce((sum, x) => sum + x.product.priceInCents * x.quantity, 0);
 
   const pay = async () => {
-    if (!email) return alert('Enter email');
-    if (cartDetails.length === 0) return alert('Your cart is empty');
-    const payload = cartDetails.map((x) => ({ slug: x.product.slug, quantity: x.quantity }));
-    const session = await createCheckout(email, payload);
-    if (session?.url) window.location.href = session.url;
+    setError('');
+    
+    if (!email) {
+      setError('Please enter your email address');
+      return;
+    }
+    
+    if (cartDetails.length === 0) {
+      setError('Your cart is empty');
+      return;
+    }
+    
+    setLoading(true);
+    
+    try {
+      const payload = cartDetails.map((x) => ({ slug: x.product.slug, quantity: x.quantity }));
+      const session = await createCheckout(email, payload);
+      
+      if (session?.url) {
+        window.location.href = session.url;
+      } else {
+        setError('Failed to create checkout session. Please try again.');
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error('Checkout error:', err);
+      const errorMessage = err.response?.data?.error || err.message || 'Failed to process payment. Please check your server configuration.';
+      setError(errorMessage);
+      setLoading(false);
+    }
   };
 
   return (
@@ -55,13 +82,50 @@ export function Checkout() {
         </div>
         <div className="border border-gray-800 rounded-md p-4 h-max">
           <label className="text-sm text-gray-400">Email</label>
-          <input className="mt-1 w-full px-3 py-2 rounded-md bg-gray-900 border border-gray-800 text-sm sm:text-base" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
+          <input 
+            className="mt-1 w-full px-3 py-2 rounded-md bg-gray-900 border border-gray-800 text-sm sm:text-base" 
+            value={email} 
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setError('');
+            }} 
+            placeholder="you@example.com"
+            type="email"
+            disabled={loading}
+          />
+          {error && (
+            <div className="mt-2 p-2 bg-red-900/20 border border-red-800 rounded text-red-400 text-sm">
+              {error}
+              {error.includes('RAZORPAY_KEY_ID') && (
+                <div className="mt-2 text-xs text-gray-400">
+                  <p>To fix this:</p>
+                  <ol className="list-decimal list-inside ml-2 mt-1 space-y-1">
+                    <li>Create a <code>.env</code> file in the <code>server</code> directory</li>
+                    <li>Add your Razorpay credentials from the template</li>
+                    <li>Restart your server</li>
+                  </ol>
+                </div>
+              )}
+            </div>
+          )}
           <div className="mt-4 flex items-center justify-between">
             <span>Total</span>
             <span className="text-primary font-semibold">₹ {(total / 100).toFixed(0)}</span>
           </div>
-          <button onClick={pay} className="mt-4 w-full px-4 py-2 rounded-md bg-primary text-gray-900 font-medium text-sm sm:text-base">Pay with Card</button>
-          <button onClick={() => clear()} className="mt-2 w-full px-4 py-2 rounded-md border border-gray-700 text-sm sm:text-base">Clear Cart</button>
+          <button 
+            onClick={pay} 
+            disabled={loading || cartDetails.length === 0}
+            className="mt-4 w-full px-4 py-2 rounded-md bg-primary text-gray-900 font-medium text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? 'Processing...' : 'Pay with Card / UPI'}
+          </button>
+          <button 
+            onClick={() => clear()} 
+            disabled={loading}
+            className="mt-2 w-full px-4 py-2 rounded-md border border-gray-700 text-sm sm:text-base disabled:opacity-50"
+          >
+            Clear Cart
+          </button>
         </div>
       </div>
     </section>

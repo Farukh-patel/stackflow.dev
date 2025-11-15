@@ -29,6 +29,16 @@ export async function createOrder(orderData) {
     return order;
   } catch (error) {
     console.error('Razorpay create order error:', error);
+    
+    // Handle specific Razorpay errors
+    if (error.statusCode === 401 || error.error?.code === 'BAD_REQUEST_ERROR') {
+      throw new Error('Razorpay authentication failed. Please check your RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET are correct.');
+    }
+    
+    if (error.error?.description) {
+      throw new Error(`Razorpay error: ${error.error.description}`);
+    }
+    
     throw new Error(error.description || error.message || 'Failed to create Razorpay order');
   }
 }
@@ -61,6 +71,16 @@ export async function createPaymentLink(paymentLinkData) {
     return paymentLink;
   } catch (error) {
     console.error('Razorpay create payment link error:', error);
+    
+    // Handle specific Razorpay errors
+    if (error.statusCode === 401 || error.error?.code === 'BAD_REQUEST_ERROR') {
+      throw new Error('Razorpay authentication failed. Please check your RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET are correct.');
+    }
+    
+    if (error.error?.description) {
+      throw new Error(`Razorpay error: ${error.error.description}`);
+    }
+    
     throw new Error(error.description || error.message || 'Failed to create Razorpay payment link');
   }
 }
