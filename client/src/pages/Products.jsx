@@ -6,12 +6,16 @@ import { SEO } from '../components/SEO.jsx';
 export function Products() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     (async () => {
       try {
         const data = await fetchProducts();
-        setProducts(data);
+        setProducts(data || []);
+      } catch (err) {
+        console.error('Error fetching products:', err);
+        setError(err.response?.data?.error || err.message || 'Failed to load products. Please check server connection.');
       } finally {
         setLoading(false);
       }
@@ -50,7 +54,42 @@ export function Products() {
     window.location.href = `${SERVER_URL}/api/download/free/${slug}`;
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="text-gray-400">Loading products...</p>;
+
+  if (error) {
+    return (
+      <section>
+        <SEO title="Products – stackflow.dev" description="Browse coding note packs across stacks and interviews." />
+        <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6">Available Notes</h2>
+        <div className="p-4 bg-red-900/20 border border-red-800 rounded text-red-400">
+          <p className="font-semibold mb-2">Error loading products</p>
+          <p className="text-sm">{error}</p>
+          <p className="text-sm mt-2 text-gray-400">Please check:</p>
+          <ul className="text-sm mt-1 ml-4 list-disc text-gray-400">
+            <li>Server is running and accessible</li>
+            <li>Database is connected and seeded</li>
+            <li>API endpoint is correct: {SERVER_URL}/api/products</li>
+          </ul>
+        </div>
+      </section>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <section>
+        <SEO title="Products – stackflow.dev" description="Browse coding note packs across stacks and interviews." />
+        <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6">Available Notes</h2>
+        <div className="p-4 bg-yellow-900/20 border border-yellow-800 rounded text-yellow-400">
+          <p className="font-semibold mb-2">No products found</p>
+          <p className="text-sm">The database appears to be empty. Products need to be seeded.</p>
+          <p className="text-sm mt-2 text-gray-400">
+            Run <code className="bg-gray-900 px-1 py-0.5 rounded">npm run seed</code> in the server directory to add products.
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section>
