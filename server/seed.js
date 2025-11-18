@@ -180,7 +180,7 @@ async function run() {
     {
       title: 'Advanced JavaScript Patterns',
       description: 'Reusable JS patterns, performance tips, and interview-ready explanations.',
-      priceInCents: 29900,
+      priceInCents: 500,
       imageUrl: '/uploads/samples/node.png',
       filePath: uploads('node-express-notes.pdf'),
       slug: 'advanced-javascript-patterns',
