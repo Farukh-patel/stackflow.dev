@@ -74,8 +74,11 @@ export function Terms() {
           <p className="mb-2">
             All payments are processed securely through Razorpay. By making a purchase, you agree to pay the specified price for the products you select.
           </p>
-          <p>
+          <p className="mb-2">
             Prices are displayed in Indian Rupees (INR) and are subject to change without notice. You are responsible for paying all applicable taxes and fees.
+          </p>
+          <p className="mt-3 font-semibold text-slate-800 dark:text-gray-100">
+            All sales are final. Once a purchase is completed and the digital product is delivered, no refunds or cancellations will be provided.
           </p>
         </div>
 

@@ -14,6 +14,10 @@ const productSchema = new mongoose.Schema(
       trim: true,
       default: 'General'
     },
+    features: {
+      type: [String],
+      default: []
+    },
     notionUrl: { type: String }
   },
   { timestamps: true }

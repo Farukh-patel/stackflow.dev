@@ -55,7 +55,37 @@ export function Products() {
     window.location.href = `${SERVER_URL}/api/download/free/${slug}`;
   };
 
-  if (loading) return <p className="text-slate-500 dark:text-gray-400">Loading products...</p>;
+  // Skeleton loading component
+  const ProductSkeleton = () => (
+    <div className="border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden bg-white dark:bg-gray-900/80 animate-pulse">
+      <div className="w-full h-44 bg-gray-200 dark:bg-gray-800" />
+      <div className="p-4 sm:p-5 space-y-3">
+        <div className="h-6 bg-gray-200 dark:bg-gray-800 rounded w-3/4" />
+        <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-full" />
+        <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-5/6" />
+        <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-4/6" />
+        <div className="h-10 bg-gray-200 dark:bg-gray-800 rounded w-full mt-4" />
+      </div>
+    </div>
+  );
+
+  if (loading) {
+    return (
+      <section>
+        <SEO title="Products – stackflow.dev" description="Browse coding note packs across stacks and interviews." />
+        <div className="bg-gradient-to-r from-indigo-100 via-purple-50 to-primary/10 dark:from-indigo-900/30 dark:via-purple-900/20 dark:to-primary/10 border border-primary/20 dark:border-primary/30 rounded-2xl p-5 sm:p-8 mb-6 sm:mb-10">
+          <div className="h-6 bg-gray-200 dark:bg-gray-800 rounded w-1/3 mb-3 animate-pulse" />
+          <div className="h-8 bg-gray-200 dark:bg-gray-800 rounded w-2/3 mb-2 animate-pulse" />
+          <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-full max-w-2xl animate-pulse" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <ProductSkeleton key={i} />
+          ))}
+        </div>
+      </section>
+    );
+  }
 
   if (error) {
     return (
@@ -163,8 +193,28 @@ export function Products() {
                     {p.isFree ? 'FREE' : `₹ ${(Number(p.priceInCents || 0) / 100).toFixed(0)}`}
                   </span>
                 </div>
-                <p className="text-sm text-slate-600 dark:text-gray-400 line-clamp-3 flex-1">{p.description}</p>
-                <div className="text-xs text-slate-500 dark:text-gray-500 flex items-center gap-2">
+                <p className="text-sm text-slate-600 dark:text-gray-400 line-clamp-2 flex-1">{p.description}</p>
+                {p.features && p.features.length > 0 && (
+                  <div className="mt-2 space-y-1.5">
+                    <p className="text-xs font-semibold text-slate-500 dark:text-gray-400 uppercase tracking-wide">What's inside:</p>
+                    <ul className="space-y-1">
+                      {p.features.slice(0, 4).map((feature, idx) => (
+                        <li key={idx} className="flex items-start gap-2 text-xs text-slate-600 dark:text-gray-300">
+                          <svg className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span className="flex-1">{feature}</span>
+                        </li>
+                      ))}
+                      {p.features.length > 4 && (
+                        <li className="text-xs text-primary font-medium pl-6">
+                          +{p.features.length - 4} more topics
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+                )}
+                <div className="text-xs text-slate-500 dark:text-gray-500 flex items-center gap-2 mt-2">
                   <span className="text-primary font-semibold">{getRandomCount(p.slug, p.isFree)}</span>
                   <span>{p.isFree ? 'downloads' : 'purchases'}</span>
                 </div>

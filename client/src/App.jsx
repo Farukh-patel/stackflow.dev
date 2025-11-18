@@ -247,7 +247,6 @@ function Footer() {
       <div className="mx-auto max-w-6xl px-4">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
           <p className="text-sm text-slate-500 dark:text-gray-400">© {new Date().getFullYear()} stackflow.dev</p>
-          <p className="text-sm text-slate-500 dark:text-gray-400">Built with React, Tailwind, Razorpay</p>
         </div>
         <nav className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-slate-500 dark:text-gray-400">
           <Link to="/contact" className="hover:text-primary transition-colors">Contact Us</Link>

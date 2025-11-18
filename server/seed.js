@@ -23,7 +23,15 @@ async function run() {
       filePath: uploads('mern-notes.pdf'),
       slug: 'mern-complete-notes',
       isFree: false,
-      category: 'Full Stack'
+      category: 'Full Stack',
+      features: [
+        'MongoDB setup & schema design',
+        'Express.js routing & middleware',
+        'React hooks & state management',
+        'Node.js best practices',
+        'Full-stack authentication',
+        'API integration patterns'
+      ]
     },
     {
       title: 'React Notes',
@@ -33,7 +41,15 @@ async function run() {
       filePath: uploads('react-notes.pdf'),
       slug: 'react-notes',
       isFree: false,
-      category: 'JavaScript'
+      category: 'JavaScript',
+      features: [
+        'React Hooks (useState, useEffect, custom)',
+        'Component composition patterns',
+        'Performance optimization techniques',
+        'Context API & state management',
+        'React Router & navigation',
+        'Testing with Jest & React Testing Library'
+      ]
     },
     {
       title: 'Node + Express Notes',
@@ -43,7 +59,15 @@ async function run() {
       filePath: uploads('node-express-notes.pdf'),
       slug: 'node-express-notes',
       isFree: false,
-      category: 'JavaScript'
+      category: 'JavaScript',
+      features: [
+        'Express.js routing & middleware',
+        'RESTful API design',
+        'Error handling & validation',
+        'Database integration (MongoDB, PostgreSQL)',
+        'Authentication & authorization',
+        'Deployment & production tips'
+      ]
     },
     {
       title: 'Git Essentials Cheat Sheet',
@@ -53,7 +77,15 @@ async function run() {
       filePath: uploads('git-cheatsheet.pdf'),
       slug: 'git-essentials-cheatsheet',
       isFree: true,
-      category: 'DevOps'
+      category: 'DevOps',
+      features: [
+        'Basic Git commands',
+        'Branching & merging strategies',
+        'Staging & committing',
+        'Remote repository management',
+        'Conflict resolution',
+        'Git workflows (GitFlow, GitHub Flow)'
+      ]
     },
     {
       title: 'DSA Starter Pack',
@@ -63,7 +95,15 @@ async function run() {
       filePath: uploads('dsa-starter-pack.pdf'),
       slug: 'dsa-starter-pack',
       isFree: true,
-      category: 'DSA'
+      category: 'DSA',
+      features: [
+        'Arrays & string manipulation',
+        'Basic sorting algorithms',
+        'Two-pointer technique',
+        'Sliding window pattern',
+        'Hash maps & sets',
+        'Time & space complexity basics'
+      ]
     },
     {
       title: 'DSA Complete Roadmap',
@@ -73,7 +113,15 @@ async function run() {
       filePath: uploads('dsa-complete-roadmap.pdf'),
       slug: 'dsa-complete-roadmap',
       isFree: false,
-      category: 'DSA'
+      category: 'DSA',
+      features: [
+        'All major DSA patterns (15+ patterns)',
+        'Trees, graphs, and advanced structures',
+        'Dynamic programming strategies',
+        'Backtracking & recursion',
+        'Greedy algorithms',
+        '150+ solved examples with explanations'
+      ]
     },
     {
       title: 'Python Automation Playbook',
@@ -83,7 +131,15 @@ async function run() {
       filePath: uploads('mern-notes.pdf'),
       slug: 'python-automation-playbook',
       isFree: false,
-      category: 'Python'
+      category: 'Python',
+      features: [
+        'Python basics & advanced concepts',
+        'Web scraping with BeautifulSoup',
+        'API integration & requests',
+        'File handling & automation',
+        'Data processing with pandas',
+        'Script optimization & best practices'
+      ]
     },
     {
       title: 'AI & ML Interview Kit',
@@ -93,7 +149,15 @@ async function run() {
       filePath: uploads('dsa-complete-roadmap.pdf'),
       slug: 'ai-ml-interview-kit',
       isFree: false,
-      category: 'AI & ML'
+      category: 'AI & ML',
+      features: [
+        'Core ML algorithms (supervised & unsupervised)',
+        'Neural networks & deep learning basics',
+        'Model evaluation & metrics',
+        'Feature engineering techniques',
+        'ML system design patterns',
+        'Interview questions & answers'
+      ]
     },
     {
       title: 'Java Springboard Notes',
@@ -103,7 +167,15 @@ async function run() {
       filePath: uploads('react-notes.pdf'),
       slug: 'java-springboard-notes',
       isFree: false,
-      category: 'Java'
+      category: 'Java',
+      features: [
+        'Java OOP concepts & design patterns',
+        'Collections framework & generics',
+        'Spring Boot fundamentals',
+        'REST API development',
+        'Database integration (JPA, Hibernate)',
+        'Exception handling & best practices'
+      ]
     },
     {
       title: 'Advanced JavaScript Patterns',
@@ -113,7 +185,15 @@ async function run() {
       filePath: uploads('node-express-notes.pdf'),
       slug: 'advanced-javascript-patterns',
       isFree: false,
-      category: 'JavaScript'
+      category: 'JavaScript',
+      features: [
+        'Closures, scope & hoisting',
+        'Promises, async/await patterns',
+        'Event loop & concurrency',
+        'Design patterns (Module, Observer, etc.)',
+        'Performance optimization',
+        'ES6+ features & modern syntax'
+      ]
     }
   ]);
 

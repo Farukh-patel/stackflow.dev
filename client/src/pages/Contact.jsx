@@ -20,7 +20,7 @@ export function Contact() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Create mailto link
-    const mailtoLink = `mailto:stackflow.dev@gmail.com?subject=${encodeURIComponent(formData.subject || 'Contact from stackflow.dev')}&body=${encodeURIComponent(
+    const mailtoLink = `mailto:stackflowdotdev@gmail.com?subject=${encodeURIComponent(formData.subject || 'Contact from stackflow.dev')}&body=${encodeURIComponent(
       `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
     )}`;
     window.location.href = mailtoLink;
@@ -49,7 +49,7 @@ export function Contact() {
             {submitted ? (
               <div className="p-4 bg-green-50 border border-green-200 rounded-2xl text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300">
                 <p className="mb-2 font-medium">✓ Message prepared! Your email client should open shortly.</p>
-                <p className="text-sm text-slate-600 dark:text-gray-300">If it doesn't open, please email us directly at <a href="mailto:stackflow.dev@gmail.com" className="text-primary underline">stackflow.dev@gmail.com</a></p>
+                <p className="text-sm text-slate-600 dark:text-gray-300">If it doesn't open, please email us directly at <a href="mailto:stackflowdotdev@gmail.com" className="text-primary underline">stackflowdotdev@gmail.com</a></p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -65,7 +65,7 @@ export function Contact() {
                     value={formData.name}
                     onChange={handleChange}
                     className="w-full px-3 py-2.5 rounded-xl bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-slate-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="John Doe"
+                    placeholder="Rahul Sharma"
                   />
                 </div>
 
@@ -81,7 +81,7 @@ export function Contact() {
                     value={formData.email}
                     onChange={handleChange}
                     className="w-full px-3 py-2.5 rounded-xl bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-slate-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="john@example.com"
+                    placeholder="rahul@example.com"
                   />
                 </div>
 
@@ -135,10 +135,10 @@ export function Contact() {
                 <div>
                   <h3 className="text-sm font-semibold text-slate-500 dark:text-gray-400 mb-1">Email</h3>
                   <a 
-                    href="mailto:stackflow.dev@gmail.com" 
+                    href="mailto:stackflowdotdev@gmail.com" 
                     className="text-primary hover:underline break-all"
                   >
-                    stackflow.dev@gmail.com
+                    stackflowdotdev@gmail.com
                   </a>
                 </div>
 
