@@ -2,11 +2,11 @@ import { SEO } from '../components/SEO.jsx';
 
 export function RefundPolicy() {
   return (
-    <section className="prose prose-invert max-w-none">
+    <section className="prose max-w-none text-slate-700 dark:text-gray-300 dark:prose-invert">
       <SEO title="Refund & Cancellation Policy – stackflow.dev" description="Refund and cancellation policy for stackflow.dev" />
       <h1 className="text-2xl sm:text-3xl font-semibold mb-6">Refund & Cancellation Policy</h1>
       
-      <div className="space-y-6 text-sm sm:text-base text-gray-300">
+      <div className="space-y-6 text-sm sm:text-base text-slate-600 dark:text-gray-300">
         <div>
           <h2 className="text-xl font-semibold mb-3">1. Overview</h2>
           <p className="mb-2">
@@ -144,7 +144,7 @@ export function RefundPolicy() {
           </p>
         </div>
 
-        <div className="text-xs text-gray-400 mt-8 pt-6 border-t border-gray-800">
+        <div className="text-xs text-slate-500 dark:text-gray-400 mt-8 pt-6 border-t border-gray-200 dark:border-gray-800">
           <p>Last updated: {new Date().toLocaleDateString()}</p>
         </div>
       </div>

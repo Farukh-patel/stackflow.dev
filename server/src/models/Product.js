@@ -9,6 +9,11 @@ const productSchema = new mongoose.Schema(
     filePath: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
     isFree: { type: Boolean, default: false },
+    category: {
+      type: String,
+      trim: true,
+      default: 'General'
+    },
     notionUrl: { type: String }
   },
   { timestamps: true }

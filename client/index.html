@@ -6,8 +6,26 @@
     <title>stackflow.dev – Developer Notes</title>
     <meta name="description" content="Download clean, organized coding notes across languages, frameworks, and interviews." />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <script>
+      (function () {
+        try {
+          var themeKey = 'stackflow-theme';
+          var storedTheme = window.localStorage.getItem(themeKey);
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = storedTheme || (prefersDark ? 'dark' : 'light');
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+          window.__STACKFLOW_THEME__ = theme;
+        } catch (error) {
+          console.warn('Theme bootstrap failed:', error);
+        }
+      })();
+    </script>
   </head>
-  <body class="bg-gray-950 text-gray-100">
+  <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

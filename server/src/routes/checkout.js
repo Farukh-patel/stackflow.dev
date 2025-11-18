@@ -6,6 +6,13 @@ import { v4 as uuidv4 } from 'uuid';
 
 const router = express.Router();
 
+const normalizeEmail = (value = '') => value.trim().toLowerCase();
+const parseEmailList = (value = '') =>
+  value
+    .split(',')
+    .map((entry) => entry.trim().toLowerCase())
+    .filter(Boolean);
+
 // POST /api/checkout/create-session
 // body: { email, items: [{ slug, quantity }] }
 router.post('/create-session', async (req, res) => {
@@ -29,17 +36,47 @@ router.post('/create-session', async (req, res) => {
       return res.status(500).json({ error: 'SERVER_URL is not configured. Please set SERVER_URL in your server environment variables.' });
     }
 
+    // Determine if a private test price should be applied
+    const configuredTestSlug = process.env.TEST_PRICE_SLUG?.trim();
+    const configuredTestPrice = Number(process.env.TEST_PRICE_IN_CENTS || 500);
+    const testEmails = parseEmailList(process.env.TEST_PRICE_EMAILS || '');
+    const normalizedEmail = normalizeEmail(email);
+
+    const canUseTestPrice =
+      Boolean(configuredTestSlug) &&
+      Number.isFinite(configuredTestPrice) &&
+      configuredTestPrice > 0 &&
+      testEmails.includes(normalizedEmail);
+
+    const enrichedProducts = products.map((product) => {
+      const quantity = items.find((i) => i.slug === product.slug)?.quantity || 1;
+      const applyTestPrice = canUseTestPrice && product.slug === configuredTestSlug;
+      const adjustedPriceInCents = applyTestPrice ? configuredTestPrice : product.priceInCents;
+      return {
+        ...product,
+        quantity,
+        adjustedPriceInCents,
+        applyTestPrice
+      };
+    });
+
     // Calculate total amount in paise (Razorpay uses paise)
-    const totalAmount = products.reduce((sum, p) => {
-      const quantity = items.find((i) => i.slug === p.slug)?.quantity || 1;
-      return sum + (p.priceInCents * quantity); // priceInCents is already in paise
+    const totalAmount = enrichedProducts.reduce((sum, product) => {
+      return sum + product.adjustedPriceInCents * product.quantity;
     }, 0);
+
+    if (!totalAmount) {
+      return res.status(400).json({ error: 'Unable to calculate order total' });
+    }
 
     // Generate unique order ID
     const orderId = `order_${uuidv4().replace(/-/g, '')}`;
 
     // Create order products array for database
-    const orderProducts = products.map((p) => ({ productId: p._id, priceInCents: p.priceInCents }));
+    const orderProducts = enrichedProducts.map((product) => ({
+      productId: product._id,
+      priceInCents: product.adjustedPriceInCents
+    }));
 
     // Create order in database first
     const dbOrder = await Order.create({
@@ -51,9 +88,9 @@ router.post('/create-session', async (req, res) => {
     });
 
     // Prepare order notes
-    const orderNotes = products.map((p) => {
-      const quantity = items.find((i) => i.slug === p.slug)?.quantity || 1;
-      return `${p.title} x${quantity}`;
+    const orderNotes = enrichedProducts.map((product) => {
+      const noteSuffix = product.applyTestPrice ? ` (test ₹${(product.adjustedPriceInCents / 100).toFixed(2)})` : '';
+      return `${product.title} x${product.quantity}${noteSuffix}`;
     }).join(', ');
 
     // Create Razorpay order
@@ -88,7 +125,8 @@ router.post('/create-session', async (req, res) => {
       callback_method: 'get',
       notes: {
         order_id: orderId,
-        email: email
+        email: email,
+        ...(canUseTestPrice ? { test_price_slug: configuredTestSlug, test_price_applied: 'true' } : {})
       }
     };
 

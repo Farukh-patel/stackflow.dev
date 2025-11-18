@@ -60,30 +60,34 @@ export function Checkout() {
   };
 
   return (
-    <section>
+    <section className="space-y-6 text-slate-800 dark:text-gray-100">
       <SEO title="Checkout – stackflow.dev" description="Complete purchase and receive secure downloads." />
-      <h2 className="text-2xl font-semibold mb-6">Checkout</h2>
+      <h2 className="text-2xl font-semibold mb-2">Checkout</h2>
+      <p className="text-sm text-slate-500 dark:text-gray-400 mb-4">Secure payments powered by Razorpay.</p>
       <div className="grid md:grid-cols-3 gap-6 md:gap-8">
         <div className="md:col-span-2 space-y-4">
           {cartDetails.length === 0 ? (
-            <p className="text-gray-400">Your cart is empty. Add items from the Products page.</p>
+            <p className="text-slate-500 dark:text-gray-400">Your cart is empty. Add items from the Products page.</p>
           ) : (
             cartDetails.map(({ product, quantity }) => (
-              <div key={product.slug} className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border border-gray-800 rounded-md">
+              <div key={product.slug} className="flex items-center gap-3 sm:gap-4 p-4 border border-gray-200 dark:border-gray-800 rounded-2xl bg-white dark:bg-gray-900/70">
                 <img src={`${SERVER_URL}${product.imageUrl}`} alt={product.title} className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-sm sm:text-base truncate">{product.title}</p>
-                  <p className="text-xs sm:text-sm text-gray-400">₹ {(product.priceInCents / 100).toFixed(0)}</p>
+                  <p className="text-xs sm:text-sm text-slate-500 dark:text-gray-400">₹ {(product.priceInCents / 100).toFixed(0)}</p>
                 </div>
-                <button className="ml-2 sm:ml-4 text-red-400 text-sm sm:text-base whitespace-nowrap" onClick={() => removeItem(product.slug)}>Remove</button>
+                <div className="flex items-center gap-3 text-sm text-slate-500 dark:text-gray-400">
+                  <span className="font-semibold text-slate-700 dark:text-gray-100">x{quantity}</span>
+                  <button className="text-red-500 dark:text-red-400 text-sm sm:text-base whitespace-nowrap" onClick={() => removeItem(product.slug)}>Remove</button>
+                </div>
               </div>
             ))
           )}
         </div>
-        <div className="border border-gray-800 rounded-md p-4 h-max">
-          <label className="text-sm text-gray-400">Email</label>
+        <div className="border border-gray-200 dark:border-gray-800 rounded-2xl p-5 h-max bg-white dark:bg-gray-900/70 shadow-sm space-y-3">
+          <label className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-gray-400">Email</label>
           <input 
-            className="mt-1 w-full px-3 py-2 rounded-md bg-gray-900 border border-gray-800 text-sm sm:text-base" 
+            className="mt-1 w-full px-3 py-2.5 rounded-xl bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-sm sm:text-base text-slate-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary/70" 
             value={email} 
             onChange={(e) => {
               setEmail(e.target.value);
@@ -94,10 +98,10 @@ export function Checkout() {
             disabled={loading}
           />
           {error && (
-            <div className="mt-2 p-2 bg-red-900/20 border border-red-800 rounded text-red-400 text-sm">
+            <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300 text-sm">
               {error}
               {error.includes('RAZORPAY_KEY_ID') && (
-                <div className="mt-2 text-xs text-gray-400">
+                <div className="mt-2 text-xs text-slate-500 dark:text-gray-400">
                   <p>To fix this:</p>
                   <ol className="list-decimal list-inside ml-2 mt-1 space-y-1">
                     <li>Create a <code>.env</code> file in the <code>server</code> directory</li>
@@ -108,24 +112,25 @@ export function Checkout() {
               )}
             </div>
           )}
-          <div className="mt-4 flex items-center justify-between">
-            <span>Total</span>
-            <span className="text-primary font-semibold">₹ {(total / 100).toFixed(0)}</span>
+          <div className="mt-4 flex items-center justify-between text-sm">
+            <span className="uppercase tracking-[0.35em] text-slate-500 dark:text-gray-400">Total</span>
+            <span className="text-2xl font-semibold text-slate-900 dark:text-white">₹ {(total / 100).toFixed(0)}</span>
           </div>
           <button 
             onClick={pay} 
             disabled={loading || cartDetails.length === 0}
-            className="mt-4 w-full px-4 py-2 rounded-md bg-primary text-gray-900 font-medium text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-5 w-full px-4 py-3 rounded-xl bg-primary text-gray-900 font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_15px_35px_rgba(34,211,238,0.35)]"
           >
             {loading ? 'Processing...' : 'Pay with Card / UPI'}
           </button>
           <button 
             onClick={() => clear()} 
             disabled={loading}
-            className="mt-2 w-full px-4 py-2 rounded-md border border-gray-700 text-sm sm:text-base disabled:opacity-50"
+            className="mt-2 w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-700 text-sm sm:text-base text-slate-600 dark:text-gray-300 disabled:opacity-50"
           >
             Clear Cart
           </button>
+          <p className="text-xs text-slate-500 dark:text-gray-500 mt-3">Need help? <a href="/contact" className="text-primary">Contact us</a>.</p>
         </div>
       </div>
     </section>

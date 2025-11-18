@@ -26,7 +26,7 @@ export async function fetchProducts() {
     if (import.meta.env.DEV || import.meta.env.VITE_DEBUG) {
       console.log('✅ Products fetched:', data?.length || 0, 'products');
     }
-    return data;
+  return data;
   } catch (error) {
     if (import.meta.env.DEV || import.meta.env.VITE_DEBUG) {
       console.error('❌ Error fetching products:', {

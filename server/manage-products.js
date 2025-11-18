@@ -76,7 +76,8 @@ async function main() {
       imageUrl: '/uploads/samples/product-image.png',
       filePath: uploads('product-file.pdf'),
       slug: 'new-product-slug', // Must be unique, lowercase, hyphens
-      isFree: false
+      isFree: false,
+      category: 'Category Name'
     });
     return;
   }

@@ -2,7 +2,7 @@ import { SEO } from '../components/SEO.jsx';
 
 export function About() {
   return (
-    <section className="prose prose-invert max-w-none">
+    <section className="prose max-w-none text-slate-600 dark:text-gray-300 dark:prose-invert">
       <SEO title="About – stackflow.dev" description="Learn about stackflow.dev and how it helps learners." />
       <h2 className="text-xl sm:text-2xl font-semibold">About stackflow.dev</h2>
       <p className="text-sm sm:text-base">
