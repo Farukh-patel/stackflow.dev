@@ -7,7 +7,12 @@ export function Success() {
   const [downloads, setDownloads] = useState([]);
   const [expiresAt, setExpiresAt] = useState('');
   const [error, setError] = useState('');
+  const [verifying, setVerifying] = useState(true);
+  const [attempt, setAttempt] = useState(0);
   const { clear } = useCart();
+
+  const MAX_ATTEMPTS = 5;
+  const RETRY_DELAY = 2000; // 2 seconds
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -16,18 +21,41 @@ export function Success() {
       setError('Missing session id');
       return;
     }
-    (async () => {
+    let isMounted = true;
+
+    const attemptVerification = async (currentAttempt = 1) => {
+      if (!isMounted) return;
+      setAttempt(currentAttempt);
       try {
         const data = await verifyCheckout(session_id);
+        if (!isMounted) return;
         setDownloads(data.downloads || []);
         setExpiresAt(data.expiresAt || '');
+        setVerifying(false);
         clear();
       } catch (e) {
+        if (!isMounted) return;
         console.error('Verification error:', e);
-        setError(e.response?.data?.error || 'Payment verification failed');
+        const message = e.response?.data?.error || e.message || 'Payment verification failed';
+        const shouldRetry =
+          currentAttempt < MAX_ATTEMPTS &&
+          (message?.includes('Payment not confirmed') || message?.includes('Order not found'));
+
+        if (shouldRetry) {
+          setTimeout(() => attemptVerification(currentAttempt + 1), RETRY_DELAY);
+        } else {
+          setVerifying(false);
+          setError(message || 'Payment verification failed');
+        }
       }
-    })();
-  }, []);
+    };
+
+    attemptVerification();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [clear]);
 
   if (error) {
     return (
@@ -43,6 +71,23 @@ export function Success() {
           <p className="text-sm text-slate-600 dark:text-gray-300 mt-2">
             If you don't receive an email within a few minutes, please contact us at{' '}
             <a href="mailto:stackflowdotdev@gmail.com" className="text-primary underline">stackflowdotdev@gmail.com</a> with your order details.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  if (verifying) {
+    return (
+      <section className="text-slate-800 dark:text-gray-100">
+        <SEO title="Verifying Payment – stackflow.dev" />
+        <div className="p-6 border border-primary/30 rounded-2xl bg-white dark:bg-gray-900/60">
+          <h2 className="text-xl font-semibold mb-2">Verifying your payment…</h2>
+          <p className="text-sm text-slate-600 dark:text-gray-300">
+            We’re confirming your payment with Razorpay. This may take a few seconds.
+          </p>
+          <p className="text-xs text-slate-500 dark:text-gray-400 mt-3">
+            Attempt {attempt}/{MAX_ATTEMPTS}
           </p>
         </div>
       </section>
