@@ -29,7 +29,25 @@ export function Success() {
     })();
   }, []);
 
-  if (error) return <p className="text-red-500 dark:text-red-400">{error}</p>;
+  if (error) {
+    return (
+      <section className="text-slate-800 dark:text-gray-100">
+        <SEO title="Payment Status – stackflow.dev" />
+        <div className="p-6 border border-red-200 dark:border-red-800 rounded-2xl bg-red-50 dark:bg-red-900/20">
+          <h2 className="text-xl font-semibold text-red-700 dark:text-red-300 mb-2">Payment Verification Issue</h2>
+          <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
+          <p className="text-sm text-slate-600 dark:text-gray-300">
+            Don't worry! If your payment was successful, you should receive an email with download links shortly. 
+            Please check your email inbox (and spam folder) for the confirmation email.
+          </p>
+          <p className="text-sm text-slate-600 dark:text-gray-300 mt-2">
+            If you don't receive an email within a few minutes, please contact us at{' '}
+            <a href="mailto:stackflowdotdev@gmail.com" className="text-primary underline">stackflowdotdev@gmail.com</a> with your order details.
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="text-slate-800 dark:text-gray-100">

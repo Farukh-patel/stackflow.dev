@@ -3,6 +3,7 @@ import { createOrder, getOrder, createPaymentLink } from '../utils/razorpay.js';
 import Product from '../models/Product.js';
 import Order from '../models/Order.js';
 import { v4 as uuidv4 } from 'uuid';
+import { sendDownloadEmail } from '../utils/email.js';
 
 const router = express.Router();
 
@@ -215,6 +216,11 @@ router.get('/verify', async (req, res) => {
         url: `${process.env.SERVER_URL}/api/download/${token}/${op.productId.slug}`
       }));
 
+      // Send email with download links
+      sendDownloadEmail(order.email, { downloads, expiresAt: expires.toISOString() }).catch(err => {
+        console.error('Failed to send email (non-blocking):', err);
+      });
+
       return res.json({ downloads, expiresAt: expires.toISOString() });
     }
 
@@ -284,7 +290,8 @@ router.post('/webhook', async (req, res) => {
       }
 
       // Only issue token if not already issued
-      if (!order.downloadToken) {
+      const isNewToken = !order.downloadToken;
+      if (isNewToken) {
         const token = uuidv4();
         const expires = new Date(Date.now() + 15 * 60 * 1000);
         order.downloadToken = token;
@@ -297,6 +304,23 @@ router.post('/webhook', async (req, res) => {
       }
       await order.save();
       console.log('Order marked as paid:', orderId);
+
+      // Send email if token was just created (first time payment confirmed)
+      if (isNewToken) {
+        const populatedOrder = await Order.findById(order._id).populate('products.productId');
+        const downloads = populatedOrder.products.map((op) => ({
+          title: op.productId.title,
+          slug: op.productId.slug,
+          url: `${process.env.SERVER_URL}/api/download/${populatedOrder.downloadToken}/${op.productId.slug}`
+        }));
+        
+        sendDownloadEmail(populatedOrder.email, { 
+          downloads, 
+          expiresAt: populatedOrder.tokenExpiresAt.toISOString() 
+        }).catch(err => {
+          console.error('Failed to send email via webhook (non-blocking):', err);
+        });
+      }
 
     } else if (event === 'payment.failed') {
       // Payment failed
