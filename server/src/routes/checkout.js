@@ -18,9 +18,12 @@ const parseEmailList = (value = '') =>
 // body: { email, items: [{ slug, quantity }] }
 router.post('/create-session', async (req, res) => {
   try {
-    const { email, items } = req.body || {};
+    const { email, name, items } = req.body || {};
     if (!email || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ error: 'Invalid payload' });
+    }
+    if (!name || typeof name !== 'string' || name.trim().length < 2) {
+      return res.status(400).json({ error: 'Please provide your name (2+ characters).' });
     }
 
     const slugs = items.map((i) => i.slug);
@@ -82,10 +85,12 @@ router.post('/create-session', async (req, res) => {
     // Create order in database first
     const dbOrder = await Order.create({
       email,
+      buyerName: name.trim(),
       products: orderProducts,
       razorpayOrderId: orderId,
       paymentStatus: 'PENDING',
-      paid: false
+      paid: false,
+      antiPiracyCode: uuidv4().replace(/-/g, '').slice(0, 12).toUpperCase()
     });
 
     // Prepare order notes
@@ -113,7 +118,7 @@ router.post('/create-session', async (req, res) => {
       currency: 'INR',
       description: `Order for ${email}`,
       customer: {
-        name: email.split('@')[0], // Use email prefix as name
+        name: name.trim(),
         email: email,
         contact: '' // Optional: Add phone if available
       },
@@ -127,6 +132,8 @@ router.post('/create-session', async (req, res) => {
       notes: {
         order_id: orderId,
         email: email,
+        buyer_name: name.trim(),
+        anti_piracy_code: dbOrder.antiPiracyCode,
         ...(canUseTestPrice ? { test_price_slug: configuredTestSlug, test_price_applied: 'true' } : {})
       }
     };

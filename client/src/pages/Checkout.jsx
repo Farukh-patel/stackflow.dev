@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext.jsx';
 export function Checkout() {
   const [products, setProducts] = useState([]);
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { items, removeItem, clear } = useCart();
@@ -29,7 +30,12 @@ export function Checkout() {
   const pay = async () => {
     setError('');
     
-    if (!email) {
+    if (!name.trim()) {
+      setError('Please enter your name');
+      return;
+    }
+
+    if (!email.trim()) {
       setError('Please enter your email address');
       return;
     }
@@ -43,7 +49,7 @@ export function Checkout() {
     
     try {
       const payload = cartDetails.map((x) => ({ slug: x.product.slug, quantity: x.quantity }));
-      const session = await createCheckout(email, payload);
+      const session = await createCheckout({ email, name, items: payload });
       
       if (session?.url) {
         window.location.href = session.url;
@@ -85,7 +91,19 @@ export function Checkout() {
           )}
         </div>
         <div className="border border-gray-200 dark:border-gray-800 rounded-2xl p-5 h-max bg-white dark:bg-gray-900/70 shadow-sm space-y-3">
-          <label className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-gray-400">Email</label>
+          <label className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-gray-400">Name</label>
+          <input
+            className="mt-1 w-full px-3 py-2.5 rounded-xl bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-sm sm:text-base text-slate-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary/70"
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+              setError('');
+            }}
+            placeholder="Bruce Wayne"
+            type="text"
+            disabled={loading}
+          />
+          <label className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-gray-400 mt-4">Email</label>
           <input 
             className="mt-1 w-full px-3 py-2.5 rounded-xl bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-sm sm:text-base text-slate-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary/70" 
             value={email} 

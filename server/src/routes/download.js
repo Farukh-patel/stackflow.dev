@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import Order from '../models/Order.js';
 import Product from '../models/Product.js';
+import { generateWatermarkedPdf } from '../utils/watermark.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -39,7 +40,36 @@ router.get('/:token/:slug', async (req, res) => {
     if (!product) return res.status(404).json({ error: 'Product not found' });
 
     const absolutePath = path.join(__dirname, '../..', 'uploads', product.filePath);
-    res.download(absolutePath, `${product.slug}.pdf`);
+
+    const buffer = await generateWatermarkedPdf({
+      sourcePath: absolutePath,
+      buyerName: order.buyerName,
+      email: order.email,
+      orderId: order.razorpayOrderId,
+      antiPiracyCode: order.antiPiracyCode || order._id.toString(),
+      productTitle: product.title
+    });
+
+    const downloadHistoryEntry = {
+      productSlug: slug,
+      downloadedAt: new Date(),
+      ipAddress: req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip,
+      userAgent: req.get('user-agent')
+    };
+    order.downloadHistory = Array.isArray(order.downloadHistory) ? order.downloadHistory : [];
+    order.downloadHistory.push(downloadHistoryEntry);
+    // keep last 20 events
+    if (order.downloadHistory.length > 20) {
+      order.downloadHistory = order.downloadHistory.slice(-20);
+    }
+    await order.save();
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${product.slug}-secure-${order.antiPiracyCode || 'watermarked'}.pdf"`
+    );
+    res.send(Buffer.from(buffer));
   } catch (error) {
     console.error('Error downloading product:', error);
     res.status(500).json({ error: 'Failed to download file' });

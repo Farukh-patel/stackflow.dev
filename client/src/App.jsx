@@ -156,24 +156,24 @@ function Navbar({ theme, onToggleTheme }) {
               </svg>
             )}
           </button>
-          {count > 0 && (
-            <Link to="/checkout" className="px-3 py-1.5 rounded-md bg-primary text-gray-900 font-medium text-sm">
-              Checkout
-            </Link>
-          )}
-          <button
-            onClick={toggleMobileMenu}
+        {count > 0 && (
+          <Link to="/checkout" className="px-3 py-1.5 rounded-md bg-primary text-gray-900 font-medium text-sm">
+            Checkout
+          </Link>
+        )}
+        <button
+          onClick={toggleMobileMenu}
             className="md:hidden p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
-            aria-label="Toggle menu"
-          >
-            <svg className="w-6 h-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
-              {mobileMenuOpen ? (
-                <path d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
+          aria-label="Toggle menu"
+        >
+          <svg className="w-6 h-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+            {mobileMenuOpen ? (
+              <path d="M6 18L18 6M6 6l12 12" />
+            ) : (
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            )}
+          </svg>
+        </button>
         </div>
       </div>
 

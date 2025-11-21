@@ -8,7 +8,7 @@ export const SERVER_URL = import.meta.env.VITE_SERVER_URL || defaultServerUrl;
 
 // Debug logging (only in development or if explicitly enabled)
 if (import.meta.env.DEV || import.meta.env.VITE_DEBUG) {
-  console.log('🔧 API Configuration:', {
+  console.log('[cfg] API configuration:', {
     isProduction: import.meta.env.PROD,
     viteServerUrl: import.meta.env.VITE_SERVER_URL,
     defaultServerUrl,
@@ -19,17 +19,17 @@ if (import.meta.env.DEV || import.meta.env.VITE_DEBUG) {
 export async function fetchProducts() {
   const url = `${SERVER_URL}/api/products`;
   if (import.meta.env.DEV || import.meta.env.VITE_DEBUG) {
-    console.log('📡 Fetching products from:', url);
+    console.log('[fetch] Products from:', url);
   }
   try {
     const { data } = await axios.get(url);
     if (import.meta.env.DEV || import.meta.env.VITE_DEBUG) {
-      console.log('✅ Products fetched:', data?.length || 0, 'products');
+      console.log('[ok] Products fetched:', data?.length || 0, 'products');
     }
   return data;
   } catch (error) {
     if (import.meta.env.DEV || import.meta.env.VITE_DEBUG) {
-      console.error('❌ Error fetching products:', {
+      console.error('[err] Fetch products failed:', {
         url,
         message: error.message,
         response: error.response?.data,
@@ -40,8 +40,8 @@ export async function fetchProducts() {
   }
 }
 
-export async function createCheckout(email, items) {
-  const { data } = await axios.post(`${SERVER_URL}/api/checkout/create-session`, { email, items });
+export async function createCheckout({ email, name, items }) {
+  const { data } = await axios.post(`${SERVER_URL}/api/checkout/create-session`, { email, name, items });
   return data;
 }
 

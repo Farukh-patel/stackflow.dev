@@ -46,7 +46,7 @@ export function Success() {
         } else {
           setVerifying(false);
           setError(message || 'Payment verification failed');
-        }
+      }
       }
     };
 

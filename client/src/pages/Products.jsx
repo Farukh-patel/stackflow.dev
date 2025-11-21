@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { fetchProducts, createCheckout, SERVER_URL } from '../services/api.js';
 import { useCart } from '../context/CartContext.jsx';
 import { SEO } from '../components/SEO.jsx';
+import { CommandPalette } from '../components/CommandPalette.jsx';
 
 export function Products() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [isPaletteOpen, setPaletteOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -21,6 +23,17 @@ export function Products() {
         setLoading(false);
       }
     })();
+  }, []);
+
+  useEffect(() => {
+    const handleGlobalShortcut = (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        setPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleGlobalShortcut);
+    return () => window.removeEventListener('keydown', handleGlobalShortcut);
   }, []);
 
   const { addItem, items } = useCart();
@@ -131,9 +144,37 @@ export function Products() {
     );
   }
 
+  const focusProductCard = (slug) => {
+    const element = document.getElementById(`product-${slug}`);
+    if (!element) return;
+    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    element.classList.add('ring-2', 'ring-primary', 'shadow-primary/40');
+    setTimeout(() => {
+      element.classList.remove('ring-2', 'ring-primary', 'shadow-primary/40');
+    }, 1500);
+  };
+
+  const handlePaletteSelect = (product) => {
+    const targetCategory = (product.category || 'General').trim();
+    if (selectedCategory !== targetCategory) {
+      setSelectedCategory(targetCategory);
+      // wait for render then focus
+      setTimeout(() => focusProductCard(product.slug), 150);
+    } else {
+      focusProductCard(product.slug);
+    }
+    setPaletteOpen(false);
+  };
+
   return (
     <section>
       <SEO title="Products – stackflow.dev" description="Browse coding note packs across stacks and interviews." />
+      <CommandPalette
+        items={products}
+        open={isPaletteOpen}
+        onClose={() => setPaletteOpen(false)}
+        onSelect={handlePaletteSelect}
+      />
       <div className="bg-gradient-to-r from-indigo-100 via-purple-50 to-primary/10 dark:from-indigo-900/30 dark:via-purple-900/20 dark:to-primary/10 border border-primary/20 dark:border-primary/30 rounded-2xl p-5 sm:p-8 mb-6 sm:mb-10">
         <p className="text-sm uppercase tracking-[0.3em] text-primary font-semibold mb-3">Curated learning tracks</p>
         <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900 dark:text-white mb-2">Pick a category, unlock focused notes.</h2>
@@ -157,6 +198,15 @@ export function Products() {
               </button>
             );
           })}
+          <button
+            onClick={() => setPaletteOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-slate-900 text-white border border-slate-800 dark:bg-white dark:text-gray-900 dark:border-white/20 hover:scale-105 transition"
+          >
+            <span>Quick Finder</span>
+            <span className="text-xs opacity-70 border border-white/30 dark:border-gray-900 rounded-md px-2 py-0.5">
+              Ctrl ⌘ K
+            </span>
+          </button>
         </div>
       </div>
       <div className="flex items-center justify-between mb-3 sm:mb-5">
@@ -178,6 +228,7 @@ export function Products() {
           {filteredProducts.map((p) => (
             <article
               key={p._id}
+              id={`product-${p.slug}`}
               className="border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden bg-white dark:bg-gray-900/80 hover:border-primary/60 transition group shadow-sm flex flex-col"
             >
               <div className="relative">
